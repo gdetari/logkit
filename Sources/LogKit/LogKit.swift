@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-class Log {
+public class Log {
     private enum Severity {
         case error, warn, info, debug
         var symbol: String {
