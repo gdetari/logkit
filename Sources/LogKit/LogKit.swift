@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-public class Log {
+public final class Log {
     private enum Severity {
         case error, warn, info, debug
         var symbol: String {
@@ -21,19 +21,19 @@ public class Log {
         return formatter
     }
 
-    static func error(_ msg: String, file: String = #file, line: Int = #line) {
+    public static func error(_ msg: String, file: String = #file, line: Int = #line) {
         logMessage(msg, severity: .error, file: file, line: line)
     }
 
-    static func warn(_ msg: String, file: String = #file, line: Int = #line) {
+    public static func warn(_ msg: String, file: String = #file, line: Int = #line) {
         logMessage(msg, severity: .warn, file: file, line: line)
     }
 
-    static func info(_ msg: String, file: String = #file, line: Int = #line) {
+    public static func info(_ msg: String, file: String = #file, line: Int = #line) {
         logMessage(msg, severity: .info, file: file, line: line)
     }
 
-    static func debug(_ msg: String, file: String = #file, line: Int = #line) {
+    public static func debug(_ msg: String, file: String = #file, line: Int = #line) {
         logMessage(msg, severity: .debug, file: file, line: line)
     }
 
