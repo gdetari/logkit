@@ -2,24 +2,17 @@ import Foundation
 import OSLog
 
 public final class Log {
-    private enum Severity {
+    public enum Severity {
         case error, warn, info, debug
-        var symbol: String {
-            switch self {
-            case .error: "❗️"
-            case .warn: "⚠️"
-            case .info: ""
-            case .debug: ""
-            }
-        }
     }
-
-    private static var reportedErrors = [String: Date]()
+    
     private static var timestampFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "H:mm:ss.SSSS"
         return formatter
     }
+    
+    public static var onMessage: ((Severity, String) -> Void)?
 
     public static func error(_ msg: String, file: String = #file, line: Int = #line) {
         logMessage(msg, severity: .error, file: file, line: line)
@@ -60,18 +53,28 @@ public final class Log {
         }
 
         let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: category)
-
-        switch severity {
-        case .error:
-            logger.error("[\(source):\(line)] \(msg)")
-        case .warn:
-            logger.warning("[\(source):\(line)] \(msg)")
-        case .info:
-            logger.info("[\(source):\(line)] \(msg)")
-        case .debug:
-            logger.debug("[\(source):\(line)] \(msg)")
-        }
+        logger.log(level: severity.osLogType, "[\(source):\(line)] \(msg)")
+        onMessage?(severity, "[\(source):\(line)] \(msg)")
     }
 
     private init() {}
+}
+
+private extension Log.Severity {
+    var symbol: String {
+        switch self {
+        case .error: "❗️"
+        case .warn: "⚠️"
+        case .info: ""
+        case .debug: ""
+        }
+    }
+    var osLogType: OSLogType {
+        switch self {
+        case .error: return .fault
+        case .warn: return .error
+        case .info: return .info
+        case .debug: return .debug
+        }
+    }
 }
